@@ -1,0 +1,68 @@
+const chalk = require('chalk');
+const cliProgress = require('cli-progress');
+
+class Logger {
+  constructor() {
+    this.progressBar = null;
+  }
+
+  info(message) {
+    console.log(chalk.blue('ℹ'), message);
+  }
+
+  success(message) {
+    console.log(chalk.green('✓'), message);
+  }
+
+  error(message) {
+    console.error(chalk.red('✗'), message);
+  }
+
+  warning(message) {
+    console.log(chalk.yellow('⚠'), message);
+  }
+
+  createProgressBar(total) {
+    this.progressBar = new cliProgress.SingleBar({
+      format: chalk.cyan('{bar}') + ' {percentage}% | {value}/{total} pages',
+      barCompleteChar: '█',
+      barIncompleteChar: '░',
+      hideCursor: true
+    });
+
+    this.progressBar.start(total, 0);
+  }
+
+  updateProgress(value) {
+    if (this.progressBar) {
+      this.progressBar.update(value);
+    }
+  }
+
+  stopProgress() {
+    if (this.progressBar) {
+      this.progressBar.stop();
+      this.progressBar = null;
+    }
+  }
+
+  printSummary(stats, outputDir, duration) {
+    console.log('\n' + chalk.bold('═══════════════════════════════════════'));
+    console.log(chalk.bold('  Conversion Summary'));
+    console.log(chalk.bold('═══════════════════════════════════════'));
+
+    console.log(`${chalk.cyan('📁 Output Directory:')} ${outputDir}`);
+    console.log(`${chalk.cyan('📄 Total Pages:')} ${stats.total}`);
+    console.log(`${chalk.green('✓ Conversion Successful:')} ${stats.successful}`);
+
+    if (stats.failed > 0) {
+      console.log(`${chalk.red('✗ Conversion Failed:')} ${stats.failed}`);
+      console.log(chalk.red('Failed pages:'), stats.failedPages.join(', '));
+    }
+
+    console.log(`${chalk.cyan('⏱️  Duration:')} ${duration}s`);
+    console.log(chalk.bold('═══════════════════════════════════════\n'));
+  }
+}
+
+module.exports = Logger;
