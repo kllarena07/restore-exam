@@ -46,7 +46,7 @@ class Logger {
     }
   }
 
-  printSummary(stats, outputDir, duration, editStats = null) {
+  printSummary(stats, outputDir, duration, editStats = null, stitchResult = null) {
     console.log('\n' + chalk.bold('═══════════════════════════════════════'));
     console.log(chalk.bold('  Conversion Summary'));
     console.log(chalk.bold('═══════════════════════════════════════'));
@@ -68,6 +68,19 @@ class Logger {
 
       if (editStats.failed > 0) {
         console.log(`${chalk.red('✗ Editing Failed:')} ${editStats.failed}`);
+      }
+    }
+
+    if (stitchResult) {
+      console.log('\n' + chalk.bold('  PDF Stitching Summary'));
+      console.log(chalk.bold('───────────────────────────────────────'));
+      if (stitchResult.success) {
+        console.log(`${chalk.green('✓ PDF Successfully Stitched')}`);
+        console.log(`${chalk.cyan('📄 Output PDF:')} ${stitchResult.path}`);
+        console.log(`${chalk.cyan('📄 Total Pages in PDF:')} ${stitchResult.totalPages}`);
+      } else {
+        console.log(`${chalk.red('✗ PDF Stitching Failed')}`);
+        console.log(chalk.red('Error:'), stitchResult.error);
       }
     }
 

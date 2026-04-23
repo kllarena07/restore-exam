@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const { createCLI } = require('./cli');
 const {
   validatePDF,
@@ -7,6 +8,7 @@ const {
 const PDFConverter = require('./converter');
 const Logger = require('./logger');
 const ImageEditor = require('./imageEditor');
+const PDFStitcher = require('./pdfStitcher');
 
 async function main(args) {
   const logger = new Logger();
@@ -78,10 +80,20 @@ async function main(args) {
       });
     }
 
+    logger.info(`Stitching edited images back into PDF...`);
+    const pdfStitcher = new PDFStitcher();
+    const editedImagePaths = editResults.filter(r => r.success).map(r => r.path);
+    const outputPDFPath = path.join(path.dirname(pdfPath), 'output_cleaned.pdf');
+
+    let stitchResult = null;
+    if (editedImagePaths.length > 0) {
+      stitchResult = await pdfStitcher.stitchImagesToPDF(editedImagePaths, outputPDFPath);
+    }
+
     logger.stopProgress();
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-    logger.printSummary(stats, outputDir, duration, editStats);
+    logger.printSummary(stats, outputDir, duration, editStats, stitchResult);
 
     if (stats.failed === stats.total && stats.total > 0) {
       logger.error('All pages failed to convert. Check dependencies.');
