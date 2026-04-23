@@ -46,7 +46,7 @@ class Logger {
     }
   }
 
-  printSummary(stats, outputDir, duration) {
+  printSummary(stats, outputDir, duration, editStats = null) {
     console.log('\n' + chalk.bold('═══════════════════════════════════════'));
     console.log(chalk.bold('  Conversion Summary'));
     console.log(chalk.bold('═══════════════════════════════════════'));
@@ -60,7 +60,18 @@ class Logger {
       console.log(chalk.red('Failed pages:'), stats.failedPages.join(', '));
     }
 
-    console.log(`${chalk.cyan('⏱️  Duration:')} ${duration}s`);
+    if (editStats) {
+      console.log('\n' + chalk.bold('  Image Editing Summary'));
+      console.log(chalk.bold('───────────────────────────────────────'));
+      console.log(`${chalk.cyan('🎨 Total Images Edited:')} ${editStats.total}`);
+      console.log(`${chalk.green('✓ Editing Successful:')} ${editStats.successful}`);
+
+      if (editStats.failed > 0) {
+        console.log(`${chalk.red('✗ Editing Failed:')} ${editStats.failed}`);
+      }
+    }
+
+    console.log(`\n${chalk.cyan('⏱️  Duration:')} ${duration}s`);
     console.log(chalk.bold('═══════════════════════════════════════\n'));
   }
 }

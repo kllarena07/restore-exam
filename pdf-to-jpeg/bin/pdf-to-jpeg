@@ -1,7 +1,0 @@
-#!/usr/bin/env node
-
-const path = require('path');
-const main = require('../src/index');
-
-const cliArgs = process.argv.slice(2);
-main(cliArgs);
