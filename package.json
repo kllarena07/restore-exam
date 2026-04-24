@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Convert PDF pages to JPEG images",
   "main": "src/index.js",
-  "bin": {
-    "pdf-to-jpeg": "./bin/pdf-to-jpeg"
-  },
   "scripts": {
     "start": "node src/index.js",
     "test": "echo \"No tests specified\" && exit 0"
