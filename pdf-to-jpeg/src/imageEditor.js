@@ -13,7 +13,29 @@ class ImageEditor {
 
     this.vertexAI = new VertexAI({ project: projectId, location: location });
     this.model = 'gemini-2.5-flash-image';
-    this.prompt = 'Restore this document to its original unmarked state by removing any handwritten annotations, answers, or markings while preserving the printed content';
+    this.prompt = `You are a document cleaning specialist. Remove all student markings while preserving all original printed content using these SPECIFIC visual criteria:
+
+PRESERVE - Keep ANY content that:
+- Uses the SAME font style and size as question text, instructions, or other printed content on this document
+- Is properly aligned with the document's printed layout structure
+- Is clearly part of the original document design (boxes, lines, labels, answer choice options)
+- Appears in the consistent visual style of the document's printed text
+
+REMOVE - Eliminate ALL content that:
+- Has IRREGULAR placement, rotation, or alignment (not matching the document's printed grid)
+- Clearly FILLS IN blank spaces, circles, bubbles, or answer lines
+- Appears to be ADDED CONTENT filling empty answer areas
+- Is handwritten text, numbers, or markings with irregular thickness or placement
+- Includes circles, checkmarks, Xs, underlines, or drawings around items
+- Are multiple choice selections (filled bubbles, checked boxes)
+
+DECISION RULES:
+1. Check font consistency first: Same font as printed questions → PRESERVE
+2. Check alignment: Irregular placement/rotation → REMOVE
+3. Check fill boundaries: Content filling blank areas → REMOVE
+4. Default to PRESERVING anything that looks like it was part of the original printed document
+
+The goal: Return a clean document with all original printed content intact, but with all student additions removed. When in doubt, preserve content that matches the document's visual style.`;
   }
 
   async editImage(imagePath, maxRetries = 3) {
